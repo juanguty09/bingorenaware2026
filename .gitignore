@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+client/node_modules/
+
+# Build output
+client/dist/
+server/public/
+
+# Environment — never commit real credentials
+.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

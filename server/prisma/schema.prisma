@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Participant {
+  id             String      @id @default(cuid())
+  participantId  String      @unique
+  fullName       String
+  contractNumber String
+  organization   String
+  email          String
+  phone          String
+  createdAt      DateTime    @default(now())
+  cards          BingoCard[]
+}
+
+model BingoCard {
+  id            String      @id @default(cuid())
+  cardCode      String      @unique
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id])
+  grid          Json
+  markedNumbers Json        @default("[]")
+  createdAt     DateTime    @default(now())
+  winners       Winner[]
+}
+
+model DrawSession {
+  id            String        @id @default(cuid())
+  status        SessionStatus @default(PENDING)
+  numbersDrawn  Json          @default("[]")
+  currentNumber Int?
+  startedAt     DateTime?
+  endedAt       DateTime?
+  winners       Winner[]
+}
+
+enum SessionStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  FINISHED
+}
+
+model Winner {
+  id         String      @id @default(cuid())
+  cardId     String
+  card       BingoCard   @relation(fields: [cardId], references: [id])
+  sessionId  String
+  session    DrawSession @relation(fields: [sessionId], references: [id])
+  winType    WinType
+  detectedAt DateTime    @default(now())
+}
+
+enum WinType {
+  LINE
+  COLUMN
+  DIAGONAL
+  CORNERS
+  BINGO
+}

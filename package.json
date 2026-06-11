@@ -1,0 +1,27 @@
+{
+  "name": "bingo-renaware-2026",
+  "version": "1.0.0",
+  "description": "Virtual Bingo for Rena Ware corporate sales campaign (~3,000 participants)",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "build": "cd client && npm run build",
+    "dev": "nodemon server/index.js",
+    "prisma:generate": "prisma generate --schema=server/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=server/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=server/prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "multer": "^2.1.1",
+    "socket.io": "^4.8.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^5.22.0"
+  }
+}
