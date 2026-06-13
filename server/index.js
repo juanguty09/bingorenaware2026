@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 const { Server } = require('socket.io');
 const cors = require('cors');
 
@@ -29,12 +30,14 @@ app.use(express.json());
 app.use('/api/admin', adminRoutes);
 app.use('/api', publicRoutes);
 
-// Serve the built React app in production (client builds to server/public/)
-if (process.env.NODE_ENV === 'production') {
-  const staticPath = path.join(__dirname, 'public');
+// Serve the built React app when server/public/index.html is present.
+// Checked at startup so it works without NODE_ENV=production being set.
+const staticPath = path.join(__dirname, 'public');
+const indexHtml  = path.join(staticPath, 'index.html');
+if (fs.existsSync(indexHtml)) {
   app.use(express.static(staticPath));
-  // SPA fallback — must be last, after all API routes
-  app.get('*', (_req, res) => res.sendFile(path.join(staticPath, 'index.html')));
+  // SPA catch-all: any GET not matched by /api or /socket.io serves index.html
+  app.get('*', (_req, res) => res.sendFile(indexHtml));
 }
 
 io.on('connection', (socket) => {
